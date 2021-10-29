@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import style from '../styles/form.module.css'
 
+// TODO: cambiare nome componente con uno più attinente
 export default class Insert extends Component {
     constructor(props){
         super(props)
@@ -13,11 +14,11 @@ export default class Insert extends Component {
     componentDidMount(){
         
         let formData = {}
-
+        /*
         this.props.columnNameList.forEach(elem => {
             formData[elem] = null;
         });
-        
+        */
         this.setState({formData})
         
         
@@ -44,7 +45,7 @@ export default class Insert extends Component {
         //console.log(columnNameList) key
 
         let formData = this.state.formData;
-        formData[columnNameList] = e.target.value;
+        //formData[columnNameList] = e.target.value;
 
         this.setState({formData})
         //console.log(this.state.formData) HashMap
@@ -55,13 +56,17 @@ export default class Insert extends Component {
             <>  
                 <div className={style.container}>                
                     <div className={style.form}>
-                        {this.props.columnNameList.map(columnNameList => 
-                        <>
-                            <p>{columnNameList}</p>
+                        {this.props.propertiesColumnList}
+
+                        {this.props.propertiesColumnList.map(propertiesColumnList => 
+                        <div> 
+                            {/* TODO: CONVERTIRE ARRAY DI JSON IN JSONARRAY */}
+                            <p>{propertiesColumnList}</p>
                             {/* TODO: dinamicizzare il tipo di input a seconda del tipo della colonna */}
-                            <input type="text" id={columnNameList} name={columnNameList} onChange={(e) => this.handleChange(e, columnNameList)} maxLength="35" required></input>
-                        </>
+                            <input type="text" id={propertiesColumnList.name} name={propertiesColumnList.name} value={propertiesColumnList.type} onChange={(e) => this.handleChange(e, propertiesColumnList.name)} maxLength="35" required></input>
+                        </div>
                         )}
+                   
                         <br/><br/>
                         <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Insert</button>
                     </div>
@@ -72,8 +77,8 @@ export default class Insert extends Component {
 
     /*
         varchar = text
-        timestamp = calendar (vedere doc calendar tag)
-        int/long/double/float = numeric
+        timestamp = datetime-local
+        int/long/double/float = number
         
     */
 }

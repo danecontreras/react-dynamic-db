@@ -8,8 +8,8 @@ export default class Table extends Component {
     state = {
         tables: [],
         valueTable: null,
-        columnNameList: [],
-        columnTypeList: []
+        propertiesColumnMap: {},
+        propertiesColumnList: []
     }
 
     componentDidMount() {
@@ -23,20 +23,29 @@ export default class Table extends Component {
                 let result = res.data;
                 result = result.slice(1, result.length);
                 
-                let columnNameList = [];
-                let columnTypeList = [];
+                //let columnNameList = [];
+                //let columnTypeList = [];
 
+                let pColumnList = new Array(result.length);
                 for(var i=0; i<result.length; i++)
                 {
-                    let columnName = result[i].split(',').slice(0,1);
-                    columnNameList.push(columnName[0]);
-                    let columnType = result[i].split(',').slice(1,2);
-                    console.log(columnType)
-                    columnTypeList.push(columnType[0]);
+                    pColumnList[i] = {"name" : null,
+                    "type": null}
                 }
 
-                this.setState({ columnNameList });  
-                this.setState({ columnTypeList });  
+                for(i=0; i<result.length; i++)
+                {
+                    pColumnList[i] = "{ 'name': " + result[i].split(',').slice(0,1)[0] + ", 'type': " + result[i].split(',').slice(1,2)[0].replace(/1234567890()/g, '') + "}";
+                    //pColumnList[i] = result[i].split(',').slice(1,2)[0].replace(/1234567890()/g, '');
+                    
+                    //pColumnList[i] = propertiesColumnMap;
+                    console.log(pColumnList[i])
+                }
+                
+                //propertiesColumnList.forEach(propertiesColumnList => console.log(propertiesColumnList.name))
+                //this.setState({ columnNameList });  
+                //this.setState({ columnTypeList });  
+                this.setState({propertiesColumnList: pColumnList})
             })
         })  
         
@@ -45,27 +54,15 @@ export default class Table extends Component {
     
     _handleChange = (event) => {
         this.setState({valueTable: event.target.value})
+        /*
         axios.get("http://localhost:8080/" + event.target.value + "/describe")
             .then(res => {
                 let result = res.data;
                 result = result.slice(1, result.length);
                 
-                let columnNameList = [];
-                let columnTypeList = [];
-
-                for(var i=0; i<result.length; i++)
-                {
-                    let columnName = result[i].split(',').slice(0,1);
-                    columnNameList.push(columnName);
-                    
-                    let columnType = result[i].split(',').slice(1,2);
-                    
-                    columnTypeList.push(columnType);
-                }
                 
-                this.setState({ columnNameList });  
-                this.setState({ columnTypeList });  
             })
+        */
     }
 
     render() {
@@ -87,7 +84,7 @@ export default class Table extends Component {
                 </div>
             </div>
             
-            <Insert valueTable = {this.state.valueTable} columnNameList = {this.state.columnNameList} columnTypeList = {this.state.columnTypeList} />
+            <Insert valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
             
             </>
         )
