@@ -1,6 +1,11 @@
 
+.container{
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
 
-input[type=text], select {
+input[type=text], input[type=datetime-local], input[type=number], select {
     width: 300px;
     padding: 12px 20px;
     margin: 8px 0;

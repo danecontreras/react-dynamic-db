@@ -7,21 +7,8 @@ export default class Insert extends Component {
     constructor(props){
         super(props)
         this.state = {
-           formData: null
-        }
-    }
-    
-    componentDidMount(){
-        
-        let formData = {}
-        /*
-        this.props.columnNameList.forEach(elem => {
-            formData[elem] = null;
-        });
-        */
-        this.setState({formData})
-        
-        
+           formData: {}
+        }      
     }
 
     submitForm = async (formData) => {
@@ -34,51 +21,53 @@ export default class Insert extends Component {
         ).catch(error => {
             alert('There was an error!', error);
         });
-    
-        
           
     }   
 
-    handleChange = (e, columnNameList) => {
+    handleChange = (e, name) => {
         
         //console.log(e.target.value) value
-        //console.log(columnNameList) key
+        //console.log(name) key
 
         let formData = this.state.formData;
-        //formData[columnNameList] = e.target.value;
+        formData[name] = e.target.value;
 
         this.setState({formData})
-        //console.log(this.state.formData) HashMap
+        console.log(this.state.formData) 
+
     }
 
+    inputTypeChecker = (name, type) => {
+        if(type === "varchar" || type === "text") {
+            return <input type="text" id={name} name={name} onChange={(e) => this.handleChange(e, name)} maxLength="35" required></input>
+        } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
+            return <input type="number" id={name} name={name}onChange={(e) => this.handleChange(e, name)} maxLength="35" required></input>
+        } else if(type === "timestamp") {
+            return <input type="datetime-local" id={name} name={name} onChange={(e) => this.handleChange(e, name)} required></input>
+        }
+        
+    }
+    
     render() {
         return (
             <>  
                 <div className={style.container}>                
                     <div className={style.form}>
                         {this.props.propertiesColumnList}
-
-                        {this.props.propertiesColumnList.map(propertiesColumnList => 
-                        <div> 
-                            {/* TODO: CONVERTIRE ARRAY DI JSON IN JSONARRAY */}
-                            <p>{propertiesColumnList}</p>
-                            {/* TODO: dinamicizzare il tipo di input a seconda del tipo della colonna */}
-                            <input type="text" id={propertiesColumnList.name} name={propertiesColumnList.name} value={propertiesColumnList.type} onChange={(e) => this.handleChange(e, propertiesColumnList.name)} maxLength="35" required></input>
-                        </div>
-                        )}
-                   
-                        <br/><br/>
+                        {/* Se propertiesColumnList non è null allora esegue questa parte */}
+                        {   this.props.propertiesColumnList &&
+                            JSON.parse(this.props.propertiesColumnList).obj.map((propertiesColumn, i) => 
+                                <div key={i}>                
+                                    <p>{propertiesColumn.name}</p>
+                                    {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
+                                </div>
+                            )
+                        }
+                        <br/>
                         <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Insert</button>
                     </div>
                 </div>
             </>
         )
     }
-
-    /*
-        varchar = text
-        timestamp = datetime-local
-        int/long/double/float = number
-        
-    */
 }
