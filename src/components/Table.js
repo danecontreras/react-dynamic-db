@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import axios from 'axios';
 import style from '../styles/table.module.css'
 import Insert from './Insert.js'
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 export default class Table extends Component {
 
@@ -69,19 +71,35 @@ export default class Table extends Component {
                 {this.state.tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
 
-            <div className={style.container}>
-                <div className={style.containerList}>
-                    List
+            <Router>
+                <div className={style.container}>
+                    <Link to="/list" className={style.containerList}>
+                        List
+                    </Link>
+                    <Link to="/insert" className={style.containerInsert}>
+                        Insert
+                    </Link>
+                    <Link to="/update" className={style.containerUpdate}>
+                        Update
+                    </Link>
                 </div>
-                <div className={style.containerInsert}>
-                    Insert
-                </div>
-                <div className={style.containerUpdate}>
-                    Update
-                </div>
-            </div>
             
-            <Insert key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
+            
+                <Switch>
+                    <Route path="/list">
+                        Stai in list!
+                    </Route>
+
+                    <Route path="/insert">
+                        <Insert key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
+                    </Route>
+
+                    <Route path="/update">
+                        Stai in update!
+                    </Route>
+                </Switch>
+            </Router>
+            
             
             </>
         )
