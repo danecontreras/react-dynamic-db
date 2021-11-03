@@ -3,7 +3,7 @@ import axios from 'axios';
 import style from '../styles/form.module.css'
 
 // TODO: cambiare nome componente con uno più attinente
-export default class Insert extends Component {
+export default class InsertForm extends Component {
     constructor(props){
         super(props)
         this.state = {

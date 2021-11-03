@@ -1,9 +1,14 @@
 import React, { Component } from 'react'
 import axios from 'axios';
 import style from '../styles/table.module.css'
-import Insert from './Insert.js'
+
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+
+import InsertForm from './InsertForm.js'
+import UpdateForm from './UpdateForm.js'
+import ListGrid from './ListGrid.js'
+
 
 export default class Table extends Component {
 
@@ -87,15 +92,15 @@ export default class Table extends Component {
             
                 <Switch>
                     <Route path="/list">
-                        Stai in list!
+                        <ListGrid />
                     </Route>
 
                     <Route path="/insert">
-                        <Insert key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
+                        <InsertForm key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
                     </Route>
 
                     <Route path="/update">
-                        Stai in update!
+                        <UpdateForm />
                     </Route>
                 </Switch>
             </Router>
