@@ -65,7 +65,7 @@ export default class Table extends Component {
     render() {
         return (
             <>
-            <select id="selezioneTabella" onChange={this._handleChange} className={style.selectContainer} ref={ref => this._select = ref} defaultValue = {this.state.valueTable}>
+            <select id="selezioneTabella" onChange={this._handleChange} className={style.selectContainer} ref={ref => this._select = ref}>
                 {this.state.tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
 

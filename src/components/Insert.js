@@ -53,12 +53,12 @@ export default class Insert extends Component {
             <>  
                 <div className={style.container}>                
                     <div className={style.form}>
-                        {this.props.propertiesColumnList}
+                        <h3> Insert </h3>
                         {/* Se propertiesColumnList non è null allora esegue questa parte */}
                         {   this.props.propertiesColumnList &&
                             JSON.parse(this.props.propertiesColumnList).obj.map((propertiesColumn, i) => 
                                 <div key={i}>                
-                                    <p>{propertiesColumn.name}</p>
+                                    <label>{propertiesColumn.name}</label>
                                     {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
                                 </div>
                             )
