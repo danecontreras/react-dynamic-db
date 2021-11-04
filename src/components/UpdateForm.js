@@ -22,9 +22,7 @@ export default class UpdateForm extends Component {
                 
                 for(let i=0; i<result.length; i++){
                     result[i] = JSON.stringify(result[i]).split(',')
-                    
-                    resList.push(result[i][0].replace( /^\D+/g, ''))
-                    
+                    resList.push(result[i][0].replace( /^\D+/g, ''))           
                 }
 
                 this.setState({recordIdList: resList})
@@ -46,16 +44,12 @@ export default class UpdateForm extends Component {
     }
 
     submitForm = async (formData) => {
-        //e.preventDefault();
-
         axios.post("http://localhost:8080/" + this.props.valueTable + "/add" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase(), formData, {
         }).then((response) =>
-            // TODO: TOAST PRIMEREACT per il messaggio con timeout di successo / errore
             alert("Aggiornato con successo")  
         ).catch(error => {
             alert('There was an error!', error);
         });
-          
     }   
 
     handleSelectChange = (event) => {
@@ -93,7 +87,7 @@ export default class UpdateForm extends Component {
 
     }
     
-    inputTypeChecker = (name, type, i) => {
+    inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
             return <input type="text" placeholder={this.state.actualRecord[name]} id={name} name={name} onChange={(e) => this.handleFormChange(e, name)} maxLength="35" required></input>
         } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
@@ -117,7 +111,7 @@ export default class UpdateForm extends Component {
                                 JSON.parse(this.props.propertiesColumnList).map((propertiesColumn, i) => 
                                     <div key={i}>
                                         <label>{propertiesColumn.name}</label>
-                                        {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type, i)}
+                                        {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
                                     </div>
                                 )
                         }
