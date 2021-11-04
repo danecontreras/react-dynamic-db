@@ -26,20 +26,7 @@ export default class Table extends Component {
             
             axios.get("http://localhost:8080/" + tables[0] + "/describe")
             .then(res => {
-                let result = res.data;
-                result = result.slice(1, result.length);
-
-                let pColumnList = [];
-
-                for(let i=0; i<result.length; i++)
-                {
-                    pColumnList[i] =  '{"name": "'  + result[i].split(',').slice(0,1)[0] +  '", "type": "' +  result[i].split(',').slice(1,2)[0].replace(/[()1234567890]/g, '') + '"}';
-                    //console.log(pColumnList[i])
-                }
-                let myJSON = '{"obj": [' + pColumnList + ']}';
-                //let myJSON = '{"obj": [{"name": "first_name", "type": "varchar"}, {"name": "last_name", "type": "varchar"}, {"name": "last_update", "type": "timestamp"}]}';
-
-                this.setState({propertiesColumnList: myJSON})
+                this.setState({propertiesColumnList:  JSON.stringify(res.data.slice(1, res.data.length))})
             })
         })  
         
@@ -51,22 +38,10 @@ export default class Table extends Component {
         
         axios.get("http://localhost:8080/" + event.target.value + "/describe")
             .then(res => {
-                let result = res.data;
-                result = result.slice(1, result.length);
-
-                let pColumnList = [];
-
-                for(let i=0; i<result.length; i++)
-                {
-                    pColumnList[i] =  '{"name": "'  + result[i].split(',').slice(0,1)[0] +  '", "type": "' +  result[i].split(',').slice(1,2)[0].replace(/[()1234567890]/g, '') + '"}';
-                    //console.log(pColumnList[i])
-                }
-                let myJSON = '{"obj": [' + pColumnList + ']}';
-
-                this.setState({propertiesColumnList: myJSON})
-                
+                this.setState({propertiesColumnList:  JSON.stringify(res.data.slice(1, res.data.length))})
+            
             })
-        
+
     }
 
     render() {
@@ -92,7 +67,7 @@ export default class Table extends Component {
             
                 <Switch>
                     <Route path="/list">
-                        <ListGrid />
+                        <ListGrid key={this.state.valueTable} />
                     </Route>
 
                     <Route path="/insert">
@@ -100,7 +75,7 @@ export default class Table extends Component {
                     </Route>
 
                     <Route path="/update">
-                        <UpdateForm />
+                        <UpdateForm key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
                     </Route>
                 </Switch>
             </Router>
