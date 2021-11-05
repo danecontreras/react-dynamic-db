@@ -63,7 +63,7 @@ export default class InsertForm extends Component {
                             )
                         }
                         <br/>
-                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Insert</button>
+                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
                     </div>
                 </div>
             </>

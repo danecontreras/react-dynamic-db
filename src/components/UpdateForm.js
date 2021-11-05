@@ -10,7 +10,8 @@ export default class UpdateForm extends Component {
            recordIdList: [],
            formData: {},
            actualId: null,
-           actualRecord: {}
+           actualRecord: {},
+           dateValue: null
         }      
     }
 
@@ -65,8 +66,7 @@ export default class UpdateForm extends Component {
                 let initialValue = result[0].replace( /^\D+/g, '')
                 let formData = {}
                 formData[initialKey] = initialValue
-                console.log(formData)
-         
+                this.setState({dateValue: null})
                 this.setState({formData})
                 
                 
@@ -74,28 +74,36 @@ export default class UpdateForm extends Component {
 
     }
 
-    handleFormChange = (e, name) => {
+    handleFormChange = (e, name, isDate) => {
         
         //console.log(e.target.value) value
         //console.log(name) key
 
         let formData = this.state.formData;
         formData[name] = e.target.value;
-
+        
+        if(isDate)
+            this.setState({dateValue: e.target.value})
+            
         this.setState({formData})
-        console.log(this.state.formData) 
+        console.log(formData)
 
     }
     
     inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
-            return <input type="text" placeholder={this.state.actualRecord[name]} id={name} name={name} onChange={(e) => this.handleFormChange(e, name)} maxLength="35" required></input>
+            return <input type="text" placeholder={this.state.actualRecord[name]} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
         } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
-            return <input type="number" placeholder={this.state.actualRecord[name]}  id={name} name={name}onChange={(e) => this.handleFormChange(e, name)} maxLength="35" required></input>
+            return <input type="number" placeholder={this.state.actualRecord[name]}  id={name} name={name}onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
         } else if(type === "timestamp") {
-            return <input type="datetime-local" id={name} name={name} onChange={(e) => this.handleFormChange(e, name)} required></input>
+            if(this.state.actualRecord[name] !== undefined){
+                if(this.state.dateValue === null)
+                    this.setState({dateValue: this.state.actualRecord[name].substring(0, this.state.actualRecord[name].length-5)})
+                return <input type="datetime-local" value={this.state.dateValue} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, true)} required></input>
+            } else {
+                return  <input type="datetime-local" value={this.state.dateValue} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, true)} required></input>
+            }
         }
-        
     }
 
     render() {
@@ -115,7 +123,7 @@ export default class UpdateForm extends Component {
                                     </div>
                                 )
                         }
-                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Insert</button>
+                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
                     </div>
                 </div>
             </>
