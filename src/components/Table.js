@@ -67,7 +67,7 @@ export default class Table extends Component {
             
                 <Switch>
                     <Route path="/list">
-                        <ListGrid key={this.state.valueTable} />
+                        <ListGrid key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
                     </Route>
 
                     <Route path="/insert">
