@@ -6,7 +6,10 @@ export default class ListGrid extends Component {
     constructor(props){
         super(props)
         this.state = {
-            gridList: []
+            gridList: [],
+            pageValue: 12,
+            rowNumbers: 0
+            
         }      
     }
 
@@ -21,8 +24,30 @@ export default class ListGrid extends Component {
                 }
                 
                 this.setState({gridList})
-                
             })
+        this.setState({rowNumbers: this.state.pageValue})
+    }
+    
+    pagination(rowNumbers){
+        return (
+            this.state.gridList.slice(rowNumbers-this.state.pageValue, rowNumbers).map(record => 
+                <tr id="record">
+                    { 
+                        JSON.parse(this.props.propertiesColumnList).map(propertiesColumn =>
+                            <td>{JSON.parse(record)[propertiesColumn.name]}</td>
+                    )}  
+                </tr>)
+        )
+    }
+
+    prevRows(rowNumbers){
+        if(rowNumbers !== 12)
+            this.setState({rowNumbers: rowNumbers - this.state.pageValue})
+    }
+
+    nextRows(rowNumbers){  
+        if(rowNumbers < this.state.gridList.length)
+        this.setState({rowNumbers: rowNumbers + this.state.pageValue})
     }
 
     render() {
@@ -30,25 +55,21 @@ export default class ListGrid extends Component {
             <>  
                 <div className={style.mainContainer}>
                     <div className={style.container}>
-                        <table className={style.table}>
-                            <tr>
+                        <table id="table" className={style.table}>
+                            <tr className={style.header}>
                                 {   
                                     JSON.parse(this.props.propertiesColumnList).map(propertiesColumn => 
                                         <th>{propertiesColumn.name}</th>
                                     )
                                 }
                             </tr>
-                            {
-                                this.state.gridList.map(record => 
-                                    <tr>
-                                        { 
-                                            JSON.parse(this.props.propertiesColumnList).map(propertiesColumn =>
-                                                <td>{JSON.parse(record)[propertiesColumn.name]}</td>
-                                        )}  
-                                    </tr>
-                            )}
+                            {this.pagination(this.state.rowNumbers)}
                         </table>
                     </div>
+                </div>
+                <div className={style.buttonGrid}>
+                    <button className={style.prevButton} onClick={(e) => this.prevRows(this.state.rowNumbers)}>PREV PAGE</button>
+                    <button className={style.nextButton} onClick={(e) => this.nextRows(this.state.rowNumbers)}>NEXT PAGE</button>
                 </div>
             </>
         )
