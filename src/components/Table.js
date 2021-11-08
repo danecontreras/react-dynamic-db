@@ -47,24 +47,24 @@ export default class Table extends Component {
     render() {
         return (
             <>
+            <Router>
+
+            <div className={style.ul}>
+                    <Link className={style.li} to="/list">
+                        List
+                    </Link>
+                    <Link className={style.li} to="/insert">
+                        Insert
+                    </Link>
+                    <Link className={style.li} to="/update">
+                        Update
+                    </Link>
+            </div>
+
             <select id="selezioneTabella" onChange={this._handleChange} className={style.selectContainer} ref={ref => this._select = ref}>
                 {this.state.tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
 
-            <Router>
-                <div className={style.container}>
-                    <Link to="/list" className={style.containerList}>
-                        List
-                    </Link>
-                    <Link to="/insert" className={style.containerInsert}>
-                        Insert
-                    </Link>
-                    <Link to="/update" className={style.containerUpdate}>
-                        Update
-                    </Link>
-                </div>
-            
-            
                 <Switch>
                     <Route path="/list">
                         <ListGrid key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
@@ -78,6 +78,7 @@ export default class Table extends Component {
                         <UpdateForm key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
                     </Route>
                 </Switch>
+                
             </Router>
             
             

@@ -1,7 +1,7 @@
 
 .mainContainer{
     overflow-y: scroll;
-    height: 500px;
+    height: 600px;
     -ms-overflow-style: none; 
     scrollbar-width: none;
 }
@@ -56,4 +56,9 @@
     background-color: rgba(255,255,255,0.13);
     backdrop-filter: blur(10px);
     box-shadow: 0 0 40px rgba(8,7,16,0.6);
+}
+
+.dataTable{
+    height: auto;
+    width: 100%;
 }

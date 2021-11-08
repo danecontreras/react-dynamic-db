@@ -2,6 +2,10 @@ import React, { Component } from 'react'
 import axios from 'axios'
 import style from '../styles/updateForm.module.css'
 import formStyle from '../styles/form.module.css'
+import { Toast } from 'primereact/toast';
+import 'primereact/resources/themes/saga-green/theme.css';
+import 'primereact/resources/primereact.min.css';
+import 'primeicons/primeicons.css';
 
 export default class UpdateForm extends Component {
     constructor(props){
@@ -33,23 +37,21 @@ export default class UpdateForm extends Component {
                 let initialValue = this.state.actualId
                 let formData = {}
                 formData[initialKey] = initialValue
-
                 this.setState({formData})
-
                 axios.get("http://localhost:8080/" + this.props.valueTable + "/get" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase() + "/" + this.state.actualId)
                     .then(res => {
                         this.setState({actualRecord: res.data})
                     })
             })
-    
+        console.log()
     }
 
     submitForm = async (formData) => {
         axios.post("http://localhost:8080/" + this.props.valueTable + "/add" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase(), formData, {
         }).then((response) =>
-            alert("Aggiornato con successo")  
+            this.showSuccess()
         ).catch(error => {
-            alert('There was an error!', error);
+            this.showError()
         });
     }   
 
@@ -92,13 +94,16 @@ export default class UpdateForm extends Component {
     
     inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
-            return <input type="text" placeholder={this.state.actualRecord[name]} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
+
+            return <input type="text" defaultValue={this.state.actualRecord[name]} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
         } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
-            return <input type="number" placeholder={this.state.actualRecord[name]}  id={name} name={name}onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
+       
+            return <input type="number" defaultValue={this.state.actualRecord[name]}  id={name} name={name}onChange={(e) => this.handleFormChange(e, name, false)} maxLength="35" required></input>
         } else if(type === "timestamp") {
             if(this.state.actualRecord[name] !== undefined){
-                if(this.state.dateValue === null)
+                if(this.state.dateValue === null){
                     this.setState({dateValue: this.state.actualRecord[name].substring(0, this.state.actualRecord[name].length-5)})
+                }
                 return <input type="datetime-local" value={this.state.dateValue} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, true)} required></input>
             } else {
                 return  <input type="datetime-local" value={this.state.dateValue} id={name} name={name} onChange={(e) => this.handleFormChange(e, name, true)} required></input>
@@ -106,9 +111,21 @@ export default class UpdateForm extends Component {
         }
     }
 
+    showSuccess() {
+        this.toast.show({severity: 'success', summary: 'Inserito con successo! '});
+    }
+
+    showError(error) {
+        this.toast.show({severity: 'error', summary: "C'è stato un errore :( "});
+    }
+
+    checkFormData(){
+        console.log(this.state.formData)
+    }
     render() {
         return (
             <>
+                <Toast ref={(el) => this.toast = el} />
                 <select onChange={this.handleSelectChange} className={style.selectContainer} ref={ref => this._select = ref}>
                     {this.state.recordIdList.map(recordId => <option value={recordId}>{recordId}</option>)}
                 </select>
@@ -120,6 +137,7 @@ export default class UpdateForm extends Component {
                                     <div key={i}>
                                         <label>{propertiesColumn.name}</label>
                                         {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
+                                        {this.checkFormData()}
                                     </div>
                                 )
                         }
