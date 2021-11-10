@@ -47,6 +47,30 @@
     background-color: #111;
 }
 
-.li:active {
-    background-color: rgb(16, 197, 16);
+.dropdown {
+    display: none;
+    background-color: #333;
+    position: absolute;
+    height: auto;
+    width: auto;
+    left: 0px;
+    top: 40px;
+    z-index: 1;
+}
+
+.dropdownContent {
+    color: white;
+    display: block;
+    height: auto;
+    padding: 20px;
+    width: auto;
+    text-decoration: none;
+}
+
+.li:hover .dropdown {
+    display: block;
+}
+
+.dropdownContent:hover {
+    background-color: #111;
 }

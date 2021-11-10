@@ -43,7 +43,6 @@ export default class UpdateForm extends Component {
                         this.setState({actualRecord: res.data})
                     })
             })
-        console.log()
     }
 
     submitForm = async (formData) => {
@@ -88,7 +87,6 @@ export default class UpdateForm extends Component {
             this.setState({dateValue: e.target.value})
             
         this.setState({formData})
-        console.log(formData)
 
     }
     
@@ -119,9 +117,6 @@ export default class UpdateForm extends Component {
         this.toast.show({severity: 'error', summary: "C'è stato un errore :( "});
     }
 
-    checkFormData(){
-        console.log(this.state.formData)
-    }
     render() {
         return (
             <>
@@ -137,7 +132,6 @@ export default class UpdateForm extends Component {
                                     <div key={i}>
                                         <label>{propertiesColumn.name}</label>
                                         {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
-                                        {this.checkFormData()}
                                     </div>
                                 )
                         }

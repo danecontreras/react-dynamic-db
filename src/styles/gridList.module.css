@@ -1,9 +1,5 @@
 
 .mainContainer{
-    overflow-y: scroll;
-    height: 600px;
-    -ms-overflow-style: none; 
-    scrollbar-width: none;
 }
 .mainContainer::-webkit-scrollbar {
     display: none;
@@ -60,5 +56,14 @@
 
 .dataTable{
     height: auto;
-    width: 100%;
+    width: auto;
+}
+
+.addButton{
+    background-color: rgb(27, 233, 27);
+    width: 100px;
+    border-radius: 5px;
+    color: rgb(255, 255, 255);
+    border: none;
+    margin-bottom: 10px;
 }
