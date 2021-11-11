@@ -110,7 +110,7 @@ export default class UpdateForm extends Component {
     }
 
     showSuccess() {
-        this.toast.show({severity: 'success', summary: 'Inserito con successo! '});
+        this.toast.show({severity: 'success', summary: 'Aggiornato con successo! '});
     }
 
     showError(error) {

@@ -11,15 +11,8 @@ import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
 
-export default class DataTableCrudDemo extends Component {
-
-    emptyProduct = {
-        actor_id: null,
-        first_name: '',
-        last_name: '',
-        last_update: '2021-01-01T00:00:00.000+0000'
-    };
-
+export default class DynamicDataTable extends Component {
+    
     constructor(props) {
         super(props);
         this.state = {
@@ -27,12 +20,13 @@ export default class DataTableCrudDemo extends Component {
             productDialog: false,
             deleteProductDialog: false,
             deleteProductsDialog: false,
-            product: this.emptyProduct,
+            emptyProduct: {},
+            product: {},
             selectedProducts: null,
             submitted: false,
             globalFilter: null
         };
-
+        
         this.leftToolbarTemplate = this.leftToolbarTemplate.bind(this);
         this.actionBodyTemplate = this.actionBodyTemplate.bind(this);
 
@@ -44,7 +38,6 @@ export default class DataTableCrudDemo extends Component {
         this.deleteProduct = this.deleteProduct.bind(this);
         this.confirmDeleteSelected = this.confirmDeleteSelected.bind(this);
         this.deleteSelectedProducts = this.deleteSelectedProducts.bind(this);
-        this.onCategoryChange = this.onCategoryChange.bind(this);
         this.onInputChange = this.onInputChange.bind(this);
         this.onInputNumberChange = this.onInputNumberChange.bind(this);
         this.hideDeleteProductDialog = this.hideDeleteProductDialog.bind(this);
@@ -56,11 +49,27 @@ export default class DataTableCrudDemo extends Component {
             .then(res => {
                 this.setState({products: res.data})
             })
+        axios.get("http://localhost:8080/" + this.props.valueTable + "/describe")
+        .then(res => {
+            let emptyProduct = {}
+            res.data.map(result => emptyProduct[result.name] = this.typeChecker(result.type))
+            this.setState({emptyProduct})
+        })
+    }
+
+    typeChecker = (type) => {
+        if(type === "varchar" || type === "text") {
+            return ''
+        } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
+            return null
+        } else if(type === "timestamp") {
+            return '2021-01-01T00:00:00.000+0000'
+        }
     }
 
     openNew() {
         this.setState({
-            product: this.emptyProduct,
+            product: this.state.emptyProduct,
             submitted: false,
             productDialog: true
         });
@@ -83,13 +92,13 @@ export default class DataTableCrudDemo extends Component {
 
     saveProduct() {
         let state = { submitted: true };
-        
-        if (this.state.product.first_name.trim()) {
+
+        if (this.state.product[Object.keys(this.state.emptyProduct)[1]].trim()) {
             let products = [...this.state.products];
             let product = {...this.state.product};
-            console.log(this.state.product.actor_id)
-            if (this.state.product.actor_id) {
-                const index = this.findIndexById(this.state.product.actor_id);
+            
+            if (this.state.product[Object.keys(this.state.emptyProduct)[0]]) {
+                const index = this.findIndexById(this.state.product[Object.keys(this.state.emptyProduct)[0]]);
                 products[index] = product;
                 axios.post("http://localhost:8080/" + this.props.valueTable + "/add" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase(), product, {
                     }).then((response) => {
@@ -106,12 +115,11 @@ export default class DataTableCrudDemo extends Component {
                 });
             }
 
-
             state = {
                 ...state,
                 products,
                 productDialog: false,
-                product: this.emptyProduct
+                product: this.state.emptyProduct
             };
         }
 
@@ -133,13 +141,13 @@ export default class DataTableCrudDemo extends Component {
     }
 
     deleteProduct() {
-        let products = this.state.products.filter(val => val.actor_id !== this.state.product.actor_id);
+        let products = this.state.products.filter(val => val[Object.keys(this.state.emptyProduct)[0]] !== this.state.product[Object.keys(this.state.emptyProduct)[0]]);
         this.setState({
             products,
             deleteProductDialog: false,
-            product: this.emptyProduct
+            product: this.state.emptyProduct
         });
-        axios.delete("http://localhost:8080/" + this.props.valueTable + "/delete" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase() + "/" + this.state.product.actor_id, {
+        axios.delete("http://localhost:8080/" + this.props.valueTable + "/delete" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase() + "/" + this.state.product[Object.keys(this.state.emptyProduct)[0]], {
             }).then((response) => {
                 this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
             }).catch(error => {
@@ -150,7 +158,7 @@ export default class DataTableCrudDemo extends Component {
     findIndexById(id) {
         let index = -1;
         for (let i = 0; i < this.state.products.length; i++) {
-            if (this.state.products[i].id === id) {
+            if (this.state.products[Object.keys(this.state.emptyProduct)[0]] === id) {
                 index = i;
                 break;
             }
@@ -164,7 +172,7 @@ export default class DataTableCrudDemo extends Component {
 
     deleteSelectedProducts() {
         this.state.selectedProducts.map((product) => 
-                axios.delete("http://localhost:8080/" + this.props.valueTable + "/delete" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase() + "/" + product.actor_id, {
+                axios.delete("http://localhost:8080/" + this.props.valueTable + "/delete" + this.props.valueTable[0].toUpperCase() + this.props.valueTable.slice(1).toLowerCase() + "/" + product[Object.keys(this.state.emptyProduct)[0]], {
                 }).then((response) => {
                     this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
                 }).catch(error => {
@@ -180,19 +188,12 @@ export default class DataTableCrudDemo extends Component {
         });
     }
 
-    onCategoryChange(e) {
-        let product = {...this.state.product};
-        product['category'] = e.value;
-        this.setState({ product });
-    }
-
     onInputChange(e, name) {
         const val = (e.target && e.target.value) || '';
         let product = {...this.state.product};
         product[`${name}`] = val;
 
         this.setState({ product });
-        console.log(product)
     }
 
     onInputNumberChange(e, name) {
@@ -221,7 +222,18 @@ export default class DataTableCrudDemo extends Component {
         );
     }
 
+    inputTypeChecker = (name, type) => {
+        if(type === "varchar" || type === "text") {
+            return <InputText id={name} value={this.state.product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} />
+        } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
+            return <InputNumber id={name} value={this.state.product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} />
+        } else if(type === "timestamp") {
+            return <Calendar id={name} dateFormat="yy-mm-dd" value={new Date(this.state.product[name])}  onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} showTime showSeconds />
+        }
+    }
+
     render() {
+        
         const header = (
             <div className="table-header">
                 <h5 className="p-mx-0 p-my-1">Manage Products</h5>
@@ -258,35 +270,26 @@ export default class DataTableCrudDemo extends Component {
                     <Toolbar className="p-mb-4" left={this.leftToolbarTemplate}></Toolbar>
 
                     <DataTable ref={(el) => this.dt = el} value={this.state.products} selection={this.state.selectedProducts} onSelectionChange={(e) => this.setState({ selectedProducts: e.value })}
-                        dataKey="actor_id" paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
+                        dataKey={Object.keys(this.state.emptyProduct)[0]} paginator rows={10} rowsPerPageOptions={[5, 10, 25]}
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} products"
                         globalFilter={this.state.globalFilter} header={header} responsiveLayout="scroll">
                         <Column selectionMode="multiple" headerStyle={{ width: '3rem' }} exportable={false}></Column>
-                        <Column hidden = "true" field="actor_id" header="actor_id" sortable style={{ minWidth: '12rem' }}></Column>
-                        <Column field="first_name" header="first_name" sortable style={{ minWidth: '16rem' }}></Column>
-                        <Column field="last_name" header="last_name" sortable style={{ minWidth: '16rem' }}></Column>
-                        <Column field="last_update" header="last_update" sortable style={{ minWidth: '16rem' }}></Column>
+                        { JSON.parse(this.props.propertiesColumnListWithId).map(propertiesColumn => <Column field={propertiesColumn.name} header={propertiesColumn.name} ></Column>) }
                         <Column body={this.actionBodyTemplate} exportable={false} style={{ minWidth: '8rem' }}></Column>
                     </DataTable>
                 </div>
 
                 <Dialog visible={this.state.productDialog} style={{ width: '450px' }} header="Record Details" modal className="p-fluid" footer={productDialogFooter} onHide={this.hideDialog}>
-                    <div className="p-field">
-                        <label htmlFor="first_name">first_name</label>
-                        <InputText id="first_name" value={this.state.product.first_name} onChange={(e) => this.onInputChange(e, 'first_name')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.first_name })} />
-                        {this.state.submitted && !this.state.product.first_name && <small className="p-error">first_name is required.</small>}
-                    </div>
-                    <div className="p-field">
-                        <label htmlFor="last_name">last_name</label>
-                        <InputText id="last_name" value={this.state.product.last_name} onChange={(e) => this.onInputChange(e, 'last_name')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.last_name })} />
-                        {this.state.submitted && !this.state.product.last_name && <small className="p-error">last_name is required.</small>}
-                    </div>
-                    <div className="p-field">
-                        <label htmlFor="last_update">last_update</label>
-                        <Calendar id="last_update" dateFormat="yy-mm-dd" value={new Date(this.state.product.last_update)}  onChange={(e) => this.onInputChange(e, 'last_update')} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product.last_update })} showTime showSeconds />
-                        {this.state.submitted && !this.state.product.last_update && <small className="p-error">last_update is required.</small>}
-                    </div>
+                    {   
+                        JSON.parse(this.props.propertiesColumnList).map((propertiesColumn) => 
+                            <div className="p-field">     
+                                <label htmlFor={propertiesColumn.name}>{propertiesColumn.name}</label>           
+                                {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
+                                {this.state.submitted && !this.state.product[propertiesColumn.name] && <small className="p-error">{propertiesColumn.name} is required.</small>}
+                            </div>
+                        )
+                    }
                 </Dialog>
 
                 <Dialog visible={this.state.deleteProductDialog} style={{ width: '450px' }} header="Confirm" modal footer={deleteProductDialogFooter} onHide={this.hideDeleteProductDialog}>
