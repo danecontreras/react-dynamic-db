@@ -1,3 +1,28 @@
 .App {
   text-align: center;
 }
+
+nav.navbar {
+  width: 100%;
+  position: absolute;
+  z-index: 1;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
+a.navbar-brand {
+  font-size: 22px;
+}
+
+a.nav-link, a.dropdown-item{
+  font-size: 30px;
+  margin-left: 30px;
+  text-align: left;
+}
+
+button.navbar-toggler {
+  position: fixed;
+  left: 30px;
+  top: 10px;
+}

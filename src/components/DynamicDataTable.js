@@ -10,6 +10,8 @@ import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
+import {RadioButton } from 'primereact/radiobutton'
+
 
 export default class DynamicDataTable extends Component {
     
@@ -225,10 +227,22 @@ export default class DynamicDataTable extends Component {
     inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
             return <InputText id={name} value={this.state.product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} />
-        } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
+        } else if(type === "int" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
             return <InputNumber id={name} value={this.state.product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} />
         } else if(type === "timestamp") {
             return <Calendar id={name} dateFormat="yy-mm-dd" value={new Date(this.state.product[name])}  onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': this.state.submitted && !this.state.product[name] })} showTime showSeconds />
+        } else if(type === "tinyint") {
+            return (
+                <>  
+                    <div>
+                        <RadioButton name={this.state.product[name] + 1} value={this.state.product[name]} onClick={(e) => this.setState({   })} onChange={(e) => this.onInputChange(e, name)} checked={this.state.product[name] === 1} />
+                            true
+                        <br />
+                        <RadioButton name={this.state.product[name] + 2} value={this.state.product[name]} onClick={(e) => this.setState({   })} onChange={(e) => this.onInputChange(e, name)} checked={this.state.product[name] === 0} />
+                            false
+                    </div>
+                </>
+            )
         }
     }
 
@@ -284,7 +298,7 @@ export default class DynamicDataTable extends Component {
                     {   
                         JSON.parse(this.props.propertiesColumnList).map((propertiesColumn) => 
                             <div className="p-field">     
-                                <label htmlFor={propertiesColumn.name}>{propertiesColumn.name}</label>           
+                                <h4>{propertiesColumn.name}</h4>           
                                 {this.inputTypeChecker(propertiesColumn.name, propertiesColumn.type)}
                                 {this.state.submitted && !this.state.product[propertiesColumn.name] && <small className="p-error">{propertiesColumn.name} is required.</small>}
                             </div>

@@ -8,8 +8,10 @@ import { Link } from 'react-router-dom'
 import InsertForm from './InsertForm.js'
 import UpdateForm from './UpdateForm.js'
 import HtmlTable from './HtmlTable.js'
-import DataTableCrudDemo from './DataTableCrudDemo.js';
-import DynamicDataTable from './DynamicDataTable.js';
+import DataTableCrudDemo from './DataTableCrudDemo.js'
+import DynamicDataTable from './DynamicDataTable.js'
+
+import {Navbar, Container, Nav, NavDropdown} from 'react-bootstrap'
 
 export default class Table extends Component {
     
@@ -57,27 +59,36 @@ export default class Table extends Component {
         return (
             <>
             <Router>
-            <div className={style.ul}>
-                    <div className={style.li}>
-                        <div className={style.title}> List </div>
-                        <div className={style.dropdown}>
-                            <Link className={style.dropdownContent} to="/list/htmlTable">HTML Table</Link>
-                            <Link className={style.dropdownContent} to="/list/primeReactTable">PR Data Table</Link>
-                            <Link className={style.dropdownContent} to="/list/dataTable">PR Actor Table</Link>
-                        </div>
-                    </div>
-                    <Link className={style.li} to="/insert">
-                        Insert
-                    </Link>
-                    <Link className={style.li} to="/update">
-                        Update
-                    </Link>
-                    
-            </div>
+                <Navbar collapseOnSelect expand="false" bg="dark" variant="dark">
+                        <Navbar.Toggle aria-controls="collapse-navbar-nav" />
+                        <Navbar.Brand as={Link} to="/"> SAKILA PROJECT </Navbar.Brand>
+                        <Navbar.Collapse id="collapse-navbar-nav">
+                            <Nav className="me-auto">
+                            <NavDropdown title="List" id="collasible-nav-dropdown">
+                                    <NavDropdown.Item as={Link} to="/list/htmlTable">
+                                        HTML Table
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to="/list/primeReactTable">
+                                        PR Data Table
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to="/list/dataTable">
+                                        PR Actor Table
+                                    </NavDropdown.Item>
+                                </NavDropdown>
+                                <Nav.Link as={Link} to="/insert">
+                                    Insert
+                                </Nav.Link>
+                                <Nav.Link as={Link} to="/update">
+                                    Update
+                                </Nav.Link>
+                            </Nav>
+                        </Navbar.Collapse>
+                </Navbar>
 
-            <select id="selezioneTabella" onChange={this._handleChange} className={style.selectContainer} ref={ref => this._select = ref}>
-                {this.state.tables.map(tables => <option value={tables}>{tables}</option>)}
-            </select>
+                
+                <select id="selezioneTabella" onChange={this._handleChange} className={style.selectContainer} ref={ref => this._select = ref}>
+                    {this.state.tables.map(tables => <option value={tables}>{tables}</option>)}
+                </select>
 
                 <Switch>
                     <Route path="/list/htmlTable">

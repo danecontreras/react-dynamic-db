@@ -126,7 +126,7 @@ export default class UpdateForm extends Component {
                 </select>
                 <div className={formStyle.container}>                
                     <div className={formStyle.form}>
-                        <h3> Update </h3>
+                        <h3 className={formStyle.h3}> Update </h3>
                         {   
                                 JSON.parse(this.props.propertiesColumnList).map((propertiesColumn, i) => 
                                     <div key={i}>
@@ -135,7 +135,7 @@ export default class UpdateForm extends Component {
                                     </div>
                                 )
                         }
-                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
+                        <button type="button" className={formStyle.submitButton} onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
                     </div>
                 </div>
             </>

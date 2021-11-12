@@ -68,7 +68,7 @@ export default class InsertForm extends Component {
                 <Toast ref={(el) => this.toast = el} />
                 <div className={style.container}>                
                     <div className={style.form}>
-                        <h3> Insert </h3>
+                        <h3 className={style.h3}> Insert </h3>
                         {   
                             JSON.parse(this.props.propertiesColumnList).map((propertiesColumn, i) => 
                                 <div key={i}>                
@@ -78,7 +78,7 @@ export default class InsertForm extends Component {
                             )
                         }
                         <br/>
-                        <button type="button" onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
+                        <button type="button" className={style.submitButton} onClick={(e) => this.submitForm(this.state.formData)}>Save</button>
                     </div>
                 </div>
             </>

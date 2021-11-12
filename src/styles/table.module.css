@@ -1,76 +1,14 @@
 .selectContainer, .selectContainer option{
-    margin-top: 50px;
+    margin-top: 100px;
     margin-bottom: 30px;
-    width: 450px;
+    width: 500px;
     padding: 20px;
     font-size: 20px;
     border-radius: 10px;
 }
 
-.containerList, .containerInsert, .containerUpdate {
-    display: inline-block;
-    padding: 10px;
-    width: 200px;
-    margin: 20px;
-    border-radius: 20px;
-    background-color: white;
-}
-
-.containerInsert:hover, .containerList:hover, .containerUpdate:hover {
-    cursor: pointer;
-    background-color: rgba(255,255,255,0.13);
-    backdrop-filter: blur(10px);
-    box-shadow: 0 0 40px rgba(8,7,16,0.6);
-}
-
-.ul {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    overflow: hidden;
-    background-color: #333;
-}
-
 .li {
-    float: left;
+    all: unset;
+    cursor: pointer;
 }
 
-.li  {
-    display: block;
-    color: white;
-    text-align: center;
-    padding: 14px 16px;
-    text-decoration: none;
-}
-
-.li:hover {
-    background-color: #111;
-}
-
-.dropdown {
-    display: none;
-    background-color: #333;
-    position: absolute;
-    height: auto;
-    width: auto;
-    left: 0px;
-    top: 40px;
-    z-index: 1;
-}
-
-.dropdownContent {
-    color: white;
-    display: block;
-    height: auto;
-    padding: 20px;
-    width: auto;
-    text-decoration: none;
-}
-
-.li:hover .dropdown {
-    display: block;
-}
-
-.dropdownContent:hover {
-    background-color: #111;
-}
