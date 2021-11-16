@@ -11,7 +11,7 @@ import HtmlTable from './HtmlTable.js'
 import DataTableCrudDemo from './DataTableCrudDemo.js'
 import DynamicDataTable from './DynamicDataTable.js'
 
-import {Navbar, Container, Nav, NavDropdown} from 'react-bootstrap'
+import {Navbar, Nav, NavDropdown, Offcanvas} from 'react-bootstrap'
 
 export default class Table extends Component {
     
@@ -59,12 +59,16 @@ export default class Table extends Component {
         return (
             <>
             <Router>
-                <Navbar collapseOnSelect expand="false" bg="dark" variant="dark">
+                <Navbar bg="light" variant="light" expand={false}>
                         <Navbar.Toggle aria-controls="collapse-navbar-nav" />
                         <Navbar.Brand as={Link} to="/"> SAKILA PROJECT </Navbar.Brand>
-                        <Navbar.Collapse id="collapse-navbar-nav">
-                            <Nav className="me-auto">
-                            <NavDropdown title="List" id="collasible-nav-dropdown">
+                        <Navbar.Offcanvas id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" placement="start">
+                        <Offcanvas.Header closeButton>
+                            <Offcanvas.Title id="offcanvasNavbarLabel">SAKILA PROJECT</Offcanvas.Title>
+                        </Offcanvas.Header>
+                        <Offcanvas.Body>
+                        <Nav className="me-auto">
+                            <NavDropdown title="List" id="collasible-nav-dropdown" show>
                                     <NavDropdown.Item as={Link} to="/list/htmlTable">
                                         HTML Table
                                     </NavDropdown.Item>
@@ -82,7 +86,8 @@ export default class Table extends Component {
                                     Update
                                 </Nav.Link>
                             </Nav>
-                        </Navbar.Collapse>
+                        </Offcanvas.Body>
+                        </Navbar.Offcanvas>
                 </Navbar>
 
                 
