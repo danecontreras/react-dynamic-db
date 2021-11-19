@@ -10,6 +10,7 @@ import UpdateForm from './UpdateForm.js'
 import HtmlTable from './HtmlTable.js'
 import DataTableCrudDemo from './DataTableCrudDemo.js'
 import DynamicDataTable from './DynamicDataTable.js'
+import HooksDataTable from './HooksDataTable.js'
 
 import {Navbar, Nav, NavDropdown, Offcanvas} from 'react-bootstrap'
 
@@ -54,11 +55,11 @@ export default class Table extends Component {
     changedTrue(){
         this.setState({changed: true})
     }
-
+      
     render() {
         return (
             <>
-            <Router>
+            <Router basename={'/sakila-project'}>
                 <Navbar bg="light" variant="light" expand={false}>
                         <Navbar.Toggle aria-controls="collapse-navbar-nav" />
                         <Navbar.Brand as={Link} to="/"> SAKILA PROJECT </Navbar.Brand>
@@ -77,6 +78,9 @@ export default class Table extends Component {
                                     </NavDropdown.Item>
                                     <NavDropdown.Item as={Link} to="/list/dataTable">
                                         PR Actor Table
+                                    </NavDropdown.Item>
+                                    <NavDropdown.Item as={Link} to="/list/hooksDataTable">
+                                        PR Hooks Actor Table
                                     </NavDropdown.Item>
                                 </NavDropdown>
                                 <Nav.Link as={Link} to="/insert">
@@ -115,10 +119,12 @@ export default class Table extends Component {
                     <Route path="/list/dataTable">
                         <DataTableCrudDemo key={this.state.valueTable} valueTable = {this.state.valueTable} propertiesColumnList = {this.state.propertiesColumnList} />
                     </Route>
+
+                    <Route path="/list/hooksDataTable">
+                        <HooksDataTable key={this.state.valueTable} />
+                    </Route>
                 </Switch>
-                
             </Router>
-            
             
             </>
         )
