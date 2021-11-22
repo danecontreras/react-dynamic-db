@@ -11,6 +11,7 @@ import HtmlTable from './HtmlTable.js'
 import DataTableCrudDemo from './DataTableCrudDemo.js'
 import DynamicDataTable from './DynamicDataTable.js'
 import HooksDataTable from './HooksDataTable.js'
+import PersistContainer from './PersistContainer.js'
 
 import {Navbar, Nav, NavDropdown, Offcanvas} from 'react-bootstrap'
 
@@ -89,6 +90,9 @@ export default class Table extends Component {
                                 <Nav.Link as={Link} to="/update">
                                     Update
                                 </Nav.Link>
+                                <Nav.Link as={Link} to="/reduxPersistExample">
+                                    Redux Persist
+                                </Nav.Link>
                             </Nav>
                         </Offcanvas.Body>
                         </Navbar.Offcanvas>
@@ -122,6 +126,10 @@ export default class Table extends Component {
 
                     <Route path="/list/hooksDataTable">
                         <HooksDataTable key={this.state.valueTable} />
+                    </Route>
+
+                    <Route path="/reduxPersistExample">
+                        <PersistContainer />
                     </Route>
                 </Switch>
             </Router>
