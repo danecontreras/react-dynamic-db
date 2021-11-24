@@ -1,15 +1,22 @@
 export const prevLink = () => {
-    return {
-      type: "PREV_LINK"
-    }
+  return {
+    type: "PREV_LINK"
+  }
 }
 
-export const nextLink = (link) => {
+export const nextLink = () => {
+  return {
+    type: "NEXT_LINK"
+  }
+}
+
+export const newLink = (link) => {
     return {
-      type: "NEXT_LINK",
+      type: "NEW_LINK",
       payload: link
     }
 }
+
 export const reset = () => {
     return {
         type: "RESET"

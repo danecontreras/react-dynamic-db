@@ -2,8 +2,29 @@
     margin-top: 100px;
     margin-bottom: 30px;
     width: 300px;
-    padding: 20px;
     font-size: 20px;
     border-radius: 10px;
+}
+
+.backButton, .forwardButton {
+    color: black;
+    text-decoration: none;
+}
+
+.backButton {
+    position: absolute;
+    top: 60px;
+    left: 25px;
+}
+
+.forwardButton {
+    position: absolute;
+    top: 60px;
+    left: 65px;
+}
+
+.arrow:hover{
+    width: 35px;
+    height: 35px;
 }
 

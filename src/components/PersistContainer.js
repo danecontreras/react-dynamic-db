@@ -1,16 +1,15 @@
-import React, {useState} from 'react'
+import React, {useEffect} from 'react'
 import { connect } from 'react-redux'
-import { incrementNumber, reset, prevLink, nextLink} from '../redux'
+import {reset} from '../redux'
 
-function PersistContainer ({number, incrementNumber, reset, link, prevLink, nextLink}) {
-  
+
+function PersistContainer ({linkList, index, dispatch}) {
 
   return (
     <div>
-      
-      <h3>Link - {link}</h3>
-      <button onClick = {prevLink}>Previous</button>
-      <button onClick = {nextLink}>Next</button>
+      <h3>Link List - {linkList} </h3>
+      <h3>Link - {linkList[index]} Index - {index}</h3>
+      <button onClick = {(e) => dispatch(reset())} >Reset</button>
     </div>
   )
   
@@ -19,21 +18,13 @@ function PersistContainer ({number, incrementNumber, reset, link, prevLink, next
 const mapStateToProps = state => {
   return {
     number: state.persistExample.number,
-    link: state.linkPersist.link
-  }
-}
-
-const mapDispatchToProps = dispatch => {
-  return {
-    incrementNumber: () => dispatch(incrementNumber()),
-    reset: () => dispatch(reset()),
-    prevLink: () => dispatch(prevLink()),
-    // TODO: SOSTITUIRE LA STRINGA CON UNO STATE O PROP DINAMICO
-    nextLink: () => dispatch(nextLink("/ciao"))
+    index: state.linkPersist.index,
+    link: state.linkPersist.link,
+    linkList: state.linkPersist.linkList, 
+    linkActual: state.linkPersist.linkActual
   }
 }
 
 export default connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps
 )(PersistContainer)
