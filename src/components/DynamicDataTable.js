@@ -10,7 +10,7 @@ import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 import { InputText } from 'primereact/inputtext';
 import axios from 'axios';
-import {RadioButton } from 'primereact/radiobutton'
+import { RadioButton } from 'primereact/radiobutton'
 
 
 export default class DynamicDataTable extends Component {

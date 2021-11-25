@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import {reset} from '../redux'
 
@@ -17,11 +17,8 @@ function PersistContainer ({linkList, index, dispatch}) {
 
 const mapStateToProps = state => {
   return {
-    number: state.persistExample.number,
     index: state.linkPersist.index,
-    link: state.linkPersist.link,
-    linkList: state.linkPersist.linkList, 
-    linkActual: state.linkPersist.linkActual
+    linkList: state.linkPersist.linkList
   }
 }
 
