@@ -41,7 +41,7 @@ function Table({dispatch, linkList, index}) {
 
     const _handleChange = (event) => {
         setValueTable(event.target.value)
-        axios.get("http://localhost:8080/" + valueTable + "/describe")
+        axios.get("http://localhost:8080/" + event.target.value + "/describe")
             .then(res => {
                 setPropertiesColumnList(JSON.stringify(res.data.slice(1, res.data.length)))
                 setPropertiesColumnListWithId(JSON.stringify(res.data))
@@ -60,7 +60,7 @@ function Table({dispatch, linkList, index}) {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                     <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
+                            <Nav.Link as={Link} to="/dynamicHooksDataTable" onClick={() => dispatch(newLink("/dynamicHooksDataTable"))}>
                             PR Hooks Dynamic Table
                             </Nav.Link>
                             <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
@@ -89,7 +89,7 @@ function Table({dispatch, linkList, index}) {
             </select>
 
             <Switch>
-                <Route path="/hooksDataTable">
+                <Route path="/dynamicHooksDataTable">
                     <DynamicHooksDataTable key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList} propertiesColumnListWithId={propertiesColumnListWithId} />
                 </Route>
                 <Route path="/hooksDataTable">

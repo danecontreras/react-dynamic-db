@@ -6,7 +6,6 @@ nav.navbar {
   width: 100%;
   position: absolute;
   z-index: 1;
-  width: 100%;
   display: flex;
   justify-content: center;
 }
@@ -22,7 +21,7 @@ a.nav-link, a.dropdown-item{
 }
 
 button.navbar-toggler {
-  position: fixed;
+  position: absolute;
   left: 30px;
   top: 10px;
 }

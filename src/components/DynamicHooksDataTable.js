@@ -15,12 +15,13 @@ import axios from 'axios';
 
 const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColumnListWithId}) => {
 
-    const [emptyProduct, setEmptyProduct] = useState(null);
+    
     const [products, setProducts] = useState(null);
     const [productDialog, setProductDialog] = useState(false);
     const [deleteProductDialog, setDeleteProductDialog] = useState(false);
     const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(null);
+    const [emptyProduct, setEmptyProduct] = useState({});
+    const [product, setProduct] = useState({});
     const [selectedProducts, setSelectedProducts] = useState(null);
     const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
