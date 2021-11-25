@@ -5,7 +5,7 @@ import style from '../styles/table.module.css'
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Link } from 'react-router-dom'
 
-import DynamicDataTable from './DynamicDataTable.js'
+import DynamicHooksDataTable from './DynamicHooksDataTable.js'
 import HooksDataTable from './HooksDataTable.js'
 import PersistContainer from './PersistContainer.js'
 
@@ -21,32 +21,31 @@ function Table({dispatch, linkList, index}) {
     
     const [tables, setTables] = useState([])
     const [valueTable, setValueTable] = useState(null)
-    const [propertiesColumnList, setPropertiesColumnList] = useState(null)
-    const [propertiesColumnListWithId, setPropertiesColumnListWithId] = useState(null)
-
+    const [propertiesColumnList, setPropertiesColumnList] = useState([])
+    const [propertiesColumnListWithId, setPropertiesColumnListWithId] = useState([])
 
     useEffect(() => {
         axios.get(`http://localhost:8080/sakila/showTables`)
         .then(res => {
             setTables(res.data)
             setValueTable(res.data[0])
+
             axios.get("http://localhost:8080/" + res.data[0] + "/describe")
             .then(res => {
                 setPropertiesColumnList(JSON.stringify(res.data.slice(1, res.data.length)))
                 setPropertiesColumnListWithId(JSON.stringify(res.data))
             })
         })
+        
     }, []);
 
     const _handleChange = (event) => {
         setValueTable(event.target.value)
-        
-        axios.get("http://localhost:8080/" + event.target.value + "/describe")
+        axios.get("http://localhost:8080/" + valueTable + "/describe")
             .then(res => {
                 setPropertiesColumnList(JSON.stringify(res.data.slice(1, res.data.length)))
                 setPropertiesColumnListWithId(JSON.stringify(res.data))
-            })
-
+        })
     }
       
     return (
@@ -61,7 +60,10 @@ function Table({dispatch, linkList, index}) {
                     </Offcanvas.Header>
                     <Offcanvas.Body>
                     <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/list/hooksDataTable" onClick={() => dispatch(newLink("/list/hooksDataTable"))}>
+                            <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
+                            PR Hooks Dynamic Table
+                            </Nav.Link>
+                            <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
                             PR Hooks Actor Table
                             </Nav.Link>
                             <Nav.Link as={Link} to="/reduxPersistExample" onClick={() => dispatch(newLink("/reduxPersistExample"))}>
@@ -73,21 +75,24 @@ function Table({dispatch, linkList, index}) {
             </Navbar>
             
             <Link className={style.backButton} to={linkList[index]} onClick={() => dispatch(prevLink())}>
-                <img className={style.arrow} src={leftArrow} width="30" height="30"/>
+                <img className={style.arrow} src={leftArrow} alt="" width="30" height="30"/>
                 <p className={style.backButtonText}>Prev</p>
             </Link>
             <Link className={style.forwardButton} to={linkList[index]} onClick={() => dispatch(nextLink())}>
-                <img className={style.arrow} src={rightArrow} width="30" height="30"/>
+                <img className={style.arrow} src={rightArrow} alt="" width="30" height="30"/>
                 <p className={style.forwardButtonText}>Next</p>
             </Link>
         
 
-            <select id="selezioneTabella" onChange={_handleChange} className={style.selectContainer}>
+            <select id="selezioneTabella" onChange={_handleChange} className={style.selectContainer} >
                 {tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
 
             <Switch>
-                <Route path="/list/hooksDataTable">
+                <Route path="/hooksDataTable">
+                    <DynamicHooksDataTable key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList} propertiesColumnListWithId={propertiesColumnListWithId} />
+                </Route>
+                <Route path="/hooksDataTable">
                     <HooksDataTable key={valueTable} />
                 </Route>
 
