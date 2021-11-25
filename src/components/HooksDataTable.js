@@ -68,17 +68,17 @@ const HooksDataTable = () => {
                 _products[index] = _product;
                 axios.post("http://localhost:8080/actor/addActor", product, {
                     }).then((response) => {
-                        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Updated', life: 3000 });
+                        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Updated', life: 3000 });
                     }).catch(error => {
-                        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
                 });
             }
             else {
                 axios.post("http://localhost:8080/actor/addActor", product, {
                     }).then((response) => {
-                        this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Added', life: 3000 });
+                        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Added', life: 3000 });
                     }).catch(error => {
-                        this.toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
                 });
             }
         
@@ -102,9 +102,9 @@ const HooksDataTable = () => {
     const deleteProduct = () => {
         axios.delete("http://localhost:8080/actor/deleteActor/" + product.actor_id, {
             }).then((response) => {
-                this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
             }).catch(error => {
-                this.toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
         });
         let _products = products.filter(val => val.actor_id !== product.actor_id);
         setProducts(_products);
@@ -132,9 +132,9 @@ const HooksDataTable = () => {
         selectedProducts.map((product) => 
             axios.delete("http://localhost:8080/actor/deleteActor/" + product.actor_id, {
             }).then((response) => {
-                this.toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
             }).catch(error => {
-                this.toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
             })
         )
             
@@ -189,6 +189,14 @@ const HooksDataTable = () => {
             <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </React.Fragment>
     );
+    
+    const onInputChange = (e, name) => {
+        const val = (e.target && e.target.value) || '';
+        let _product = {...product};
+        _product[`${name}`] = val;
+
+        setProduct(_product);
+    }
 
     return (
         <div className="datatable-crud-demo">
@@ -214,17 +222,17 @@ const HooksDataTable = () => {
             <Dialog visible={productDialog} style={{ width: '450px' }} header="Product Details" modal className="p-fluid" footer={productDialogFooter} onHide={hideDialog}>
                     <div className="p-field">
                         <h4 htmlFor="first_name">first_name</h4>
-                        <InputText id="first_name" value={product.first_name} onChange={(e) => this.onInputChange(e, 'first_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.first_name })} />
+                        <InputText id="first_name" value={product.first_name} onChange={(e) => onInputChange(e, 'first_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.first_name })} />
                         {submitted && !product.first_name && <small className="p-error">first_name is required.</small>}
                     </div>
                     <div className="p-field">
                         <h4 htmlFor="last_name">last_name</h4>
-                        <InputText id="last_name" value={product.last_name} onChange={(e) => this.onInputChange(e, 'last_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.last_name })} />
+                        <InputText id="last_name" value={product.last_name} onChange={(e) => onInputChange(e, 'last_name')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.last_name })} />
                         {submitted && !product.last_name && <small className="p-error">last_name is required.</small>}
                     </div>
                     <div className="p-field">
                         <h4 htmlFor="last_update">last_update</h4>
-                        <Calendar id="last_update" dateFormat="yy-mm-dd" value={new Date(product.last_update)}  onChange={(e) => this.onInputChange(e, 'last_update')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.last_update })} showTime showSeconds />
+                        <Calendar id="last_update" dateFormat="yy-mm-dd" value={new Date(product.last_update)}  onChange={(e) => onInputChange(e, 'last_update')} required autoFocus className={classNames({ 'p-invalid': submitted && !product.last_update })} showTime showSeconds />
                         {submitted && !product.last_update && <small className="p-error">last_update is required.</small>}
                     </div>
             </Dialog>

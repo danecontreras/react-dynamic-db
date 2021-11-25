@@ -74,26 +74,26 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
     const saveProduct = () => {
         setSubmitted(true);
 
-        if (product.first_name.trim()) {
+        if (product[Object.keys(emptyProduct)[1]].trim()) {
             let _products = [...products];
             let _product = {...product};
-            if (product.actor_id) {
-                const index = findIndexById(product.actor_id);
+            if (product[Object.keys(emptyProduct)[0]]) {
+                const index = findIndexById(product[Object.keys(emptyProduct)[0]]);
 
                 _products[index] = _product;
                 axios.post("http://localhost:8080/" + valueTable + "/add" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase(), product, {
                     }).then((response) => {
-                        toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Updated', life: 3000 });
+                        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Updated', life: 3000 });
                     }).catch(error => {
-                        toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
                 });
             }
             else {
                 axios.post("http://localhost:8080/" + valueTable + "/add" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase(), product, {
                     }).then((response) => {
-                        toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Added', life: 3000 });
+                        toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Added', life: 3000 });
                     }).catch(error => {
-                        toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                        toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
                 });
             }
         
@@ -117,9 +117,9 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
     const deleteProduct = () => {
         axios.delete("http://localhost:8080/" + valueTable + "/delete" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase() + "/" + product[Object.keys(emptyProduct)[0]], {
             }).then((response) => {
-                toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
             }).catch(error => {
-                toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
         });
         let _products = products.filter(val => val.actor_id !== product.actor_id);
         setProducts(_products);
@@ -147,9 +147,9 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
         selectedProducts.map((product) => 
             axios.delete("http://localhost:8080/" + valueTable + "/delete" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase() + "/" + product[Object.keys(emptyProduct)[0]], {
             }).then((response) => {
-                toast.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
+                toast.current.show({ severity: 'success', summary: 'Successful', detail: 'Record Deleted', life: 3000 });
             }).catch(error => {
-                toast.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
+                toast.current.show({ severity: 'error', summary: 'Error', detail: 'Error', life: 3000 });
             })
         )
             
@@ -204,28 +204,38 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
             <Button label="Yes" icon="pi pi-check" className="p-button-text" onClick={deleteSelectedProducts} />
         </React.Fragment>
     );
-    
+
+    const onInputChange = (e, name) => {
+        const val = (e.target && e.target.value) || '';
+        let _product = {...product};
+        _product[`${name}`] = val;
+
+        setProduct(_product);
+    }
+
     const inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
-            return <InputText id={name} value={product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} />
+            return <InputText id={name} value={product[name]} onChange={(e) => onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} />
         } else if(type === "int" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
-            return <InputNumber id={name} value={product[name]} onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} />
+            return <InputNumber id={name} value={product[name]} onChange={(e) => onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} />
         } else if(type === "timestamp") {
-            return <Calendar id={name} dateFormat="yy-mm-dd" value={new Date(product[name])}  onChange={(e) => this.onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} showTime showSeconds />
+            return <Calendar id={name} dateFormat="yy-mm-dd" value={new Date(product[name])}  onChange={(e) => onInputChange(e, name)} required autoFocus className={classNames({ 'p-invalid': submitted && !product[name] })} showTime showSeconds />
         } else if(type === "tinyint") {
             return (
                 <>  
                     <div>
-                        <RadioButton name={product[name] + 1} value={product[name]} onChange={(e) => this.onInputChange(e, name)} checked={product[name] === 1} />
+                        <RadioButton name={product[name] + 1} value={product[name]} onChange={(e) => onInputChange(e, name)} checked={product[name] === 1} />
                             true
                         <br />
-                        <RadioButton name={product[name] + 2} value={product[name]} onChange={(e) => this.onInputChange(e, name)} checked={product[name] === 0} />
+                        <RadioButton name={product[name] + 2} value={product[name]} onChange={(e) => onInputChange(e, name)} checked={product[name] === 0} />
                             false
                     </div>
                 </>
             )
         }
     }
+
+    
 
     return (
         <div className="datatable-crud-demo">
