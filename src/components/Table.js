@@ -9,6 +9,7 @@ import DynamicHooksDataTable from './DynamicHooksDataTable.js'
 import HooksDataTable from './HooksDataTable.js'
 import PersistContainer from './PersistContainer.js'
 import Insert from './Insert.js'
+import UpdateForm from './UpdateForm.js'
 
 import {Navbar, Nav, Offcanvas} from 'react-bootstrap'
 
@@ -70,8 +71,11 @@ function Table({dispatch, linkList, index}) {
                             <Nav.Link as={Link} to="/reduxPersistExample" onClick={() => dispatch(newLink("/reduxPersistExample"))}>
                                 Redux Persist
                             </Nav.Link>
-                            <Nav.Link as={Link} to="/Insert" onClick={() => dispatch(newLink("/Insert"))}>
+                            <Nav.Link as={Link} to="/insert" onClick={() => dispatch(newLink("/insert"))}>
                                 Insert
+                            </Nav.Link>
+                            <Nav.Link as={Link} to="/update" onClick={() => dispatch(newLink("/update"))}>
+                                Update
                             </Nav.Link>
                         </Nav>
                     </Offcanvas.Body>
@@ -99,8 +103,11 @@ function Table({dispatch, linkList, index}) {
                 <Route path="/hooksDataTable">
                     <HooksDataTable key={valueTable} />
                 </Route>
-                <Router path="/Insert">
+                <Router path="/insert">
                     <Insert key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList}/>
+                </Router>
+                <Router path="/update">
+                    <UpdateForm key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList} />
                 </Router>
 
                 <Route path="/reduxPersistExample">
