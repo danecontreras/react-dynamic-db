@@ -7,38 +7,37 @@ function UpdateForm ({valueTable, propertiesColumnList}) {
 
     const[formData, setFormData] = useState({});
     const[recordIdList, setRecordIdList] = useState([]);
-    const[actualId, setActualId] = useState(null);
     const[actualRecord, setActualRecord] = useState({});
     const[dateValue, setDateValue] = useState(null);
     
     const toast = useRef(null);
 
     useEffect(() => {
+        //chiamata rest per prendere gli elementi dal Database
         axios.get("http://localhost:8080/" + valueTable + "/" + valueTable + "List")
             .then(res => {
                 let result = res.data;
                 let resList = [];
 
+                //Prendo la lista di ID dalla tabella
                 for(let i=0; i<result.length; i++){
-                    result[i] = JSON.stringify(result[i]).split(',')
-                    resList.push(result[i].at(-1).replace( /^\D+/g, '').replace('}', ''))       
+                    resList.push(result[i][Object.keys(result[i])[0]])       
                 }
-                
+
+                //Assegno la lista allo state
                 setRecordIdList(resList)
-                setActualId(resList[0])
-                let initialKey = result[0][0].at(-1).replace( /^\D+/g, '').replace('}', '')
-                let initialValue = actualId
-                let fData = {}
-                fData[initialKey] = initialValue
-                setFormData(fData)
-                axios.get("http://localhost:8080/" + valueTable + "/get" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase() + "/" + actualId)
+
+                //Chiamata resto per prendere il primo record al carimento della pagina
+                axios.get("http://localhost:8080/" + valueTable + "/get" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase() + "/" + resList[0].toString())
                     .then(res => {
-                        setActualRecord(res.data)
+                        let result = res.data
+                        setActualRecord(result)
+                        setFormData(result)
                 })
         })
     }, []); 
 
-    
+    //Chiamata POST per inserire i valore dalla form nel Database
     const submitForm = async (formData) => {
         axios.post("http://localhost:8080/" + valueTable + "/add" + valueTable[0].toUpperCase() + valueTable.slice(1).toLowerCase(), formData, {
         }).then((response) => {
@@ -56,18 +55,15 @@ function UpdateForm ({valueTable, propertiesColumnList}) {
                 let result = res.data;
                 setActualRecord(result)
 
-                result = JSON.stringify(result).split(',')
-                let initialKey = result[0].replace( /^\D+/g, '').replace('}', '')
-                let initialValue = result[0].replace( /^\D+/g, '').replace('}', '')
-                console.log(result)
-                console.log(initialKey)
-                console.log(initialValue)
-                let fData = {}
-                fData[initialKey] = initialValue
                 setDateValue(null)
-                setFormData(fData)
+                setFormData(result)
+                
                 
             })
+            //svuoto il value di ogni paramatro per far vedere il placeholder
+            JSON.parse(propertiesColumnList).map((propertiesColumn) => 
+                    document.forms["myForm"][propertiesColumn.name].value = ""
+                )
     }
 
     const handleChange = (e, name, isDate) => { 
@@ -76,17 +72,18 @@ function UpdateForm ({valueTable, propertiesColumnList}) {
         
         if(isDate)
             setDateValue(e.target.value)
-            
+        
+        console.log(fData)
         setFormData(fData)
     }
 
     const inputTypeChecker = (name, type) => {
         if(type === "varchar" || type === "text") {
-            return <input type="text" defaultValue={actualRecord[name]} id={name} name={name} onChange={(e) => handleChange(e, name, false)} maxLength="80" required></input>
+            return <input className={style.input} type="text" placeholder={actualRecord[name]} id={name} name={name} onChange={(e) => handleChange(e, name, false)} maxLength="80" required></input>
         } else if(type === "int" || type === "tinyint" || type === "smallint" || type === "mediumint" || type === "bigint" || type === "integer" || type === "float" || type === "double" || type === "double precision" || type === "decimal" || type === "dec" || type === "int unsigned" || type === "tinyint unsigned" || type === "smallint unsigned" || type === "mediumint unsigned" || type === "bigint unsigned") {
-            return <input type="number" defaultValue={actualRecord[name]} id={name} name={name}onChange={(e) => handleChange(e, name, false)} maxLength="35" required></input>
+            return <input type="number" placeholder={actualRecord[name]} id={name} name={name}onChange={(e) => handleChange(e, name, false)} maxLength="35" required></input>
         } else if(type === "timestamp") {
-            if(actualRecord[name] !== undefined){
+            if(actualRecord[name] !== undefined){   
                 if(dateValue === null){
                     setDateValue(actualRecord[name].substring(0, actualRecord[name].length-5)) 
                 }
@@ -116,7 +113,7 @@ function UpdateForm ({valueTable, propertiesColumnList}) {
             <div className={style.container}>                
                 <div className={style.form}>
                     <h3 className={style.h3}> Update </h3>
-                    <form>
+                    <form name = "myForm">
                         {JSON.parse(propertiesColumnList).map((propertiesColumn, i) => 
                             <div key={i}>
                                 <label>{propertiesColumn.name}</label>
