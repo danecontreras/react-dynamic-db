@@ -10,7 +10,7 @@ import HooksDataTable from './HooksDataTable.js'
 import PersistContainer from './PersistContainer.js'
 import Insert from './Insert.js'
 import UpdateForm from './UpdateForm.js'
-
+import JwtAuth from './JwtAuth.js'
 import {Navbar, Nav, Offcanvas} from 'react-bootstrap'
 
 import { connect } from 'react-redux'
@@ -19,7 +19,7 @@ import { newLink, prevLink, nextLink } from '../redux'
 import leftArrow from '../images/left-arrow.png'
 import rightArrow from '../images/right-arrow.png'
 
-function Table({dispatch, linkList, index}) {
+function Table({dispatch, linkList, index, roles}) {
     
     const [tables, setTables] = useState([])
     const [valueTable, setValueTable] = useState(null)
@@ -31,15 +31,13 @@ function Table({dispatch, linkList, index}) {
         .then(res => {
             setTables(res.data)
             setValueTable(res.data[0])
-
             axios.get("http://localhost:8080/" + res.data[0] + "/describe")
             .then(res => {
                 setPropertiesColumnList(JSON.stringify(res.data.slice(1, res.data.length)))
                 setPropertiesColumnListWithId(JSON.stringify(res.data))
             })
         })
-        
-    }, []);
+    }, [roles]);
 
     const _handleChange = (event) => {
         setValueTable(event.target.value)
@@ -49,7 +47,61 @@ function Table({dispatch, linkList, index}) {
                 setPropertiesColumnListWithId(JSON.stringify(res.data))
         })
     }
-      
+    
+    const checkRoles = () => {
+        console.log(roles)
+        if (roles.includes('ROLE_ADMIN')) {
+            return <> 
+                <div>Ruolo: ADMIN </div>
+                <Nav className="me-auto">
+                    <Nav.Link as={Link} to="/dynamicHooksDataTable" onClick={() => dispatch(newLink("/dynamicHooksDataTable"))}>
+                    PR Hooks Dynamic Table
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
+                    PR Hooks Actor Table
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/reduxPersistExample" onClick={() => dispatch(newLink("/reduxPersistExample"))}>
+                        Redux Persist
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/insert" onClick={() => dispatch(newLink("/insert"))}>
+                        Insert
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/update" onClick={() => dispatch(newLink("/update"))}>
+                        Update
+                    </Nav.Link>
+                </Nav> 
+            </>
+        } else if (roles.includes('ROLE_PRINCIPAL')) {
+            return <> 
+                <div>Ruolo: PRINCIPAL </div>
+                <Nav className="me-auto">
+                    <Nav.Link as={Link} to="/dynamicHooksDataTable" onClick={() => dispatch(newLink("/dynamicHooksDataTable"))}>
+                    PR Hooks Dynamic Table
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
+                    PR Hooks Actor Table
+                    </Nav.Link>
+                    <Nav.Link as={Link} to="/reduxPersistExample" onClick={() => dispatch(newLink("/reduxPersistExample"))}>
+                        Redux Persist
+                    </Nav.Link>
+                </Nav> 
+            </>
+        } else if (roles.includes('ROLE_USER')) {
+            return <> 
+                <div>Ruolo: USER </div>
+                <Nav className="me-auto">
+                    <Nav.Link as={Link} to="/dynamicHooksDataTable" onClick={() => dispatch(newLink("/dynamicHooksDataTable"))}>
+                    PR Hooks Dynamic Table
+                    </Nav.Link>
+                </Nav> 
+            </>
+        } else {
+            return <> NON SEI AUTENTICATO </>
+        }
+    }
+
+
+
     return (
         <>
         <Router basename={'/sakila-project'}>
@@ -61,23 +113,7 @@ function Table({dispatch, linkList, index}) {
                         <Offcanvas.Title id="offcanvasNavbarLabel">SAKILA PROJECT</Offcanvas.Title>
                     </Offcanvas.Header>
                     <Offcanvas.Body>
-                    <Nav className="me-auto">
-                            <Nav.Link as={Link} to="/dynamicHooksDataTable" onClick={() => dispatch(newLink("/dynamicHooksDataTable"))}>
-                            PR Hooks Dynamic Table
-                            </Nav.Link>
-                            <Nav.Link as={Link} to="/hooksDataTable" onClick={() => dispatch(newLink("/hooksDataTable"))}>
-                            PR Hooks Actor Table
-                            </Nav.Link>
-                            <Nav.Link as={Link} to="/reduxPersistExample" onClick={() => dispatch(newLink("/reduxPersistExample"))}>
-                                Redux Persist
-                            </Nav.Link>
-                            <Nav.Link as={Link} to="/insert" onClick={() => dispatch(newLink("/insert"))}>
-                                Insert
-                            </Nav.Link>
-                            <Nav.Link as={Link} to="/update" onClick={() => dispatch(newLink("/update"))}>
-                                Update
-                            </Nav.Link>
-                        </Nav>
+                        {checkRoles()}
                     </Offcanvas.Body>
                     </Navbar.Offcanvas>
             </Navbar>
@@ -91,11 +127,13 @@ function Table({dispatch, linkList, index}) {
                 <p className={style.forwardButtonText}>Next</p>
             </Link>
         
-
             <select id="selezioneTabella" onChange={_handleChange} className={style.selectContainer} >
                 {tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
-
+            
+            {/* Form d'autenticazione per ottenere il token */}
+            <JwtAuth />
+            
             <Switch>
                 <Route path="/dynamicHooksDataTable">
                     <DynamicHooksDataTable key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList} propertiesColumnListWithId={propertiesColumnListWithId} />
@@ -124,7 +162,9 @@ function Table({dispatch, linkList, index}) {
 const mapStateToProps = state => {
     return {
       index: state.linkPersist.index,
-      linkList: state.linkPersist.linkList
+      linkList: state.linkPersist.linkList,
+      username: state.jwtToken.username,
+      roles: state.jwtToken.roles
     }
   }
 
