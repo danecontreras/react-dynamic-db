@@ -5,6 +5,13 @@ export const getToken = (token) => {
     }
 }
 
+export const setToken = (encryptedToken) => {
+    return {
+      type: "SET_TOKEN",
+      payload: encryptedToken
+    }
+}
+
 export const reset = () => {
     return {
         type: "RESET"

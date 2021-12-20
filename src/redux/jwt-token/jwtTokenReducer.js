@@ -1,4 +1,5 @@
 const initialState = {
+    token: "",
     username: "",
     roles: []
 }
@@ -11,6 +12,11 @@ const jwtTokenReducer = (state = initialState, action) => {
             ...state,
             username: action.payload.sub,
             roles: action.payload.roles
+          }
+      case "SET_TOKEN":
+        return{
+            ...state,
+            token: action.payload
           }
         
       case "RESET":

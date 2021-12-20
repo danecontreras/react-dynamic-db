@@ -4,26 +4,43 @@ import style from '../styles/form.module.css'
 import { Toast } from 'primereact/toast';
 import jwt from 'jwt-decode'
 import { connect } from 'react-redux'
-import { getToken, reset } from '../redux'
+import { getToken, setToken, reset } from '../redux'
 
-function JwtAuth({dispatch}) {
+function JwtAuth({dispatch, token}) {
 
     const[formData, setFormData] = useState({});
     const toast = useRef(null);
     
     useEffect(() => {
-    }, []); 
+        if (token !== '' || token !== undefined || token !== null) {
+            axios.get('http://localhost:8081/verify/' + token)
+            .then(res => {
+                let isExpired = res.data
+                if (isExpired){
+                    console.log("Il token non è più valido... Verrai disconnessa dalla sessione!")
+                    dispatch(reset())
+                } else {
+                    console.log("Il token è ancora valido :) Puoi mantenere la sessione.")
+                }
+            }).catch(error => 
+                console.log(error)
+            )
+        }
+    }, [token]); 
 
     const submitForm = async (formData) => {
         //e.preventDefault();
         axios.post("http://localhost:8081/authenticate", formData, {
         }).then((response) => {
             showSuccess()
-            let token = jwt(response.data.jwt)
-            //console.log(token)
+            let decodedToken = jwt(response.data.jwt)
+            //var date = new Date(decodedToken.exp);
+            //console.log(date.toUTCString())
+            //console.log(decodedToken)
             //setUsername(token.sub)
             //setRolesList(token.roles)
-            dispatch(getToken(token))
+            dispatch(setToken(response.data.jwt))
+            dispatch(getToken(decodedToken))
         }).catch(error => {
             showError()
         });
@@ -48,7 +65,7 @@ function JwtAuth({dispatch}) {
         toast.current.show({severity: 'success', summary: 'Sloggato con successo! '});
         dispatch(reset()) 
     }
-    
+
     return (
         <div>
              <Toast ref={toast} />
@@ -67,6 +84,7 @@ function JwtAuth({dispatch}) {
                         <br/>
                         <button type="button" className={style.submitButton} onClick={(e) => submitForm(formData)}>Login</button>
                         <button type="button" className={style.logoutButton} onClick={(e) => logout()}>Logout</button>
+                        
                     </form>
                 </div>
             </div>
@@ -76,6 +94,7 @@ function JwtAuth({dispatch}) {
 
 const mapStateToProps = state => {
     return {
+      token: state.jwtToken.token,
       username: state.jwtToken.username,
       roles: state.jwtToken.roles
     }

@@ -49,7 +49,6 @@ function Table({dispatch, linkList, index, roles}) {
     }
     
     const checkRoles = () => {
-        console.log(roles)
         if (roles.includes('ROLE_ADMIN')) {
             return <> 
                 <div>Ruolo: ADMIN </div>
