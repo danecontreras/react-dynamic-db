@@ -1,6 +1,6 @@
 import React, {useState, useEffect} from 'react'
 import axios from 'axios';
-import style from '../styles/table.module.css'
+import style from '../styles/mainComponent.module.css'
 
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import { Link } from 'react-router-dom'
@@ -19,12 +19,13 @@ import { newLink, prevLink, nextLink } from '../redux'
 import leftArrow from '../images/left-arrow.png'
 import rightArrow from '../images/right-arrow.png'
 
-function Table({dispatch, linkList, index, roles}) {
+function MainComponent({dispatch, linkList, index, roles}) {
     
     const [tables, setTables] = useState([])
     const [valueTable, setValueTable] = useState(null)
     const [propertiesColumnList, setPropertiesColumnList] = useState([])
     const [propertiesColumnListWithId, setPropertiesColumnListWithId] = useState([])
+    const [ruoloAttuale, setRuoloAttuale] = useState('')
 
     useEffect(() => {
         axios.get(`http://localhost:8080/sakila/showTables`)
@@ -99,14 +100,12 @@ function Table({dispatch, linkList, index, roles}) {
         }
     }
 
-
-
     return (
         <>
         <Router basename={'/sakila-project'}>
             <Navbar bg="light" variant="light" expand={false}>
                     <Navbar.Toggle aria-controls="collapse-navbar-nav" />
-                    <Navbar.Brand as={Link} to="/" onClick={() => dispatch(newLink("/"))}> SAKILA PROJECT </Navbar.Brand>
+                    <Navbar.Brand as={Link} to="/login" onClick={() => dispatch(newLink("/login"))}> SAKILA PROJECT </Navbar.Brand>
                     <Navbar.Offcanvas id="offcanvasNavbar" aria-labelledby="offcanvasNavbarLabel" placement="start">
                     <Offcanvas.Header closeButton>
                         <Offcanvas.Title id="offcanvasNavbarLabel">SAKILA PROJECT</Offcanvas.Title>
@@ -115,6 +114,9 @@ function Table({dispatch, linkList, index, roles}) {
                         {checkRoles()}
                     </Offcanvas.Body>
                     </Navbar.Offcanvas>
+                    <div className={style.navRole}>
+                        Ruolo: {ruoloAttuale}
+                    </div>
             </Navbar>
             
             <Link className={style.backButton} to={linkList[index]} onClick={() => dispatch(prevLink())}>
@@ -130,10 +132,11 @@ function Table({dispatch, linkList, index, roles}) {
                 {tables.map(tables => <option value={tables}>{tables}</option>)}
             </select>
             
-            {/* Form d'autenticazione per ottenere il token */}
-            <JwtAuth />
             
             <Switch>
+                <Route path="/login">
+                    <JwtAuth />
+                </Route>
                 <Route path="/dynamicHooksDataTable">
                     <DynamicHooksDataTable key={valueTable} valueTable={valueTable} propertiesColumnList={propertiesColumnList} propertiesColumnListWithId={propertiesColumnListWithId} />
                 </Route>
@@ -169,4 +172,4 @@ const mapStateToProps = state => {
 
 export default connect(
     mapStateToProps
-  )(Table)
+  )(MainComponent)

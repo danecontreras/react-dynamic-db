@@ -32,6 +32,7 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
         axios.get("http://localhost:8080/" + valueTable + "/" + valueTable + "List")
             .then(res => {
                 setProducts(res.data)
+                console.log(res.data)
             })
         axios.get("http://localhost:8080/" + valueTable + "/describe")
             .then(res => {
@@ -39,6 +40,7 @@ const DynamicHooksDataTable = ({valueTable, propertiesColumnList, propertiesColu
                 res.data.map(result => emptyP[result.name] = typeChecker(result.type))
                 setEmptyProduct(emptyP)
                 setProduct(emptyP)
+                console.log(res.data)
             })
     }, []); 
 
